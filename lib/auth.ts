@@ -16,7 +16,7 @@ export const auth = betterAuth({
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
-        : process.env.V0_RUNTIME_URL),
+        : process.env.V0_RUNTIME_URL ?? 'http://localhost:3000'),
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -24,14 +24,12 @@ export const auth = betterAuth({
       console.info(`[auth] Password reset requested for ${user.email}: ${url}`)
     },
   },
-  socialProviders: process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-    ? {
-        google: {
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        },
-      }
-    : undefined,
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+    },
+  },
   trustedOrigins: [
     'http://localhost:3000',
     ...previewOrigins,

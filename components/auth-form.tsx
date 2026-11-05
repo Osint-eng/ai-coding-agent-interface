@@ -29,7 +29,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   async function continueWithGoogle() {
     setPending(true)
     const result = await authClient.signIn.social({ provider: 'google', callbackURL: '/' })
-    if (result.error) { setError('Google sign-in is not configured yet. Add Google OAuth credentials to enable it.'); setPending(false) }
+    if (result.error) { setError('Google sign-in could not start. Check the OAuth credentials and redirect URI configuration.'); setPending(false) }
   }
 
   return <div className="w-full max-w-[420px]">
