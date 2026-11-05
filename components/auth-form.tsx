@@ -28,8 +28,8 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
 
   async function continueWithGoogle() {
     setPending(true)
-    const result = await authClient.signIn.social({ provider: 'google', callbackURL: '/' })
-    if (result.error) { setError('Google sign-in could not start. Check the OAuth credentials and redirect URI configuration.'); setPending(false) }
+    const result = await authClient.signIn.social({ provider: 'google', callbackURL: `${window.location.origin}/` })
+    if (result.error) { setError('Google sign-in could not start. Confirm the OAuth client is valid and add this callback URL: /api/auth/callback/google'); setPending(false) }
   }
 
   return <div className="w-full max-w-[420px]">
