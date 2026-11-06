@@ -16,7 +16,7 @@ export const auth = betterAuth({
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL}`
-        : process.env.V0_RUNTIME_URL ?? 'https://ai-coding-agent-interface-forge-workspace.v0.build'),
+        : process.env.V0_RUNTIME_URL ?? 'https://ai-coding-agent-interface-forge-preview.v0.build'),
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
@@ -33,6 +33,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     'http://localhost:3000',
     'https://ai-coding-agent-interface-forge-workspace.v0.build',
+    'https://ai-coding-agent-interface-forge-preview.v0.build',
     ...previewOrigins,
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
     ...(process.env.VERCEL_PROJECT_PRODUCTION_URL
