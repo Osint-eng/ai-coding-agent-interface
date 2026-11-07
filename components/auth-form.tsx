@@ -28,8 +28,16 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
 
   async function continueWithGoogle() {
     setPending(true)
-    const result = await authClient.signIn.social({ provider: 'google', callbackURL: `${window.location.origin}/` })
-    if (result.error) { setError('Google sign-in could not start. Confirm the OAuth client is valid and add this callback URL: /api/auth/callback/google'); setPending(false) }
+    setError('')
+    try {
+      const response = await fetch('/api/auth/sign-in/social', { method: 'POST', headers: { 'content-type': 'application/json' }, credentials: 'include', body: JSON.stringify({ provider: 'google', callbackURL: `${window.location.origin}/` }) })
+      const result = await response.json()
+      if (!response.ok || !result.url) throw new Error('oauth-start-failed')
+      window.location.assign(result.url)
+    } catch {
+      setError('Google sign-in could not start. Check the Google OAuth client and callback URL configuration.')
+      setPending(false)
+    }
   }
 
   return <div className="w-full max-w-[420px]">
