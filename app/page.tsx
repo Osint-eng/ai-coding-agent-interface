@@ -1,33 +1,22 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import {
   Activity,
-  AlertCircle,
-  Archive,
-  ArrowDown,
-  ArrowUp,
   Bell,
   Check,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
   Circle,
-  Clipboard,
   Code2,
-  Command,
   Copy,
-  CornerDownLeft,
   FileCode2,
   FileJson,
   FileText,
   Folder,
   GitBranch,
-  GitCommit,
   GitPullRequest,
-  GripVertical,
-  Hammer,
-  Info,
   LayoutPanelLeft,
   ListChecks,
   Loader2,
@@ -44,12 +33,8 @@ import {
   Search,
   Send,
   Settings2,
-  Sparkles,
   TerminalSquare,
-  TestTube2,
-  Wrench,
   X,
-  Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -104,7 +89,7 @@ function StatusDot({ status }: { status: ToolStatus }) {
   return <Circle className="text-muted-foreground" />
 }
 
-function ToolCard({ title, detail, status, children }: { title: string; detail: string; status: ToolStatus; children?: React.ReactNode }) {
+function ToolCard({ title, detail, status, children }: { title: string; detail: string; status: ToolStatus; children?: ReactNode }) {
   const [expanded, setExpanded] = useState(status === 'running')
   return (
     <div className="rounded-xl border border-border/70 bg-card/70 shadow-sm transition-colors hover:border-border">
@@ -155,7 +140,7 @@ function Topbar({ setRightOpen, rightOpen, collapsed, setCollapsed }: { setRight
   </header>
 }
 
-function Message({ children, user, time, avatar }: { children: React.ReactNode; user?: boolean; time: string; avatar: string }) {
+function Message({ children, user, time, avatar }: { children: ReactNode; user?: boolean; time: string; avatar: string }) {
   return <div className={cn('flex gap-3', user && 'flex-row-reverse')}><div className={cn('mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg text-[10px] font-bold', user ? 'bg-emerald-500/15 text-emerald-300' : 'bg-violet-500/15 text-violet-300')}>{avatar}</div><div className={cn('max-w-[90%] sm:max-w-[78%]', user && 'items-end')}><div className={cn('mb-1.5 flex items-center gap-2 text-[10px] text-muted-foreground', user && 'justify-end')}><span className="font-medium text-foreground/80">{user ? 'You' : 'Forge'}</span><span>{time}</span></div><div className={cn('text-[13px] leading-6 text-foreground/90', user ? 'rounded-2xl rounded-tr-md bg-accent px-4 py-3' : '')}>{children}</div></div></div>
 }
 
@@ -169,7 +154,7 @@ function ChatPanel() {
       <Message time="10:42 AM" avatar="F"><p>I&apos;ve mapped the project. The dashboard currently has a basic shell, so I&apos;ll start by creating the hero section and a responsive feature grid.</p><div className="mt-4 flex flex-col gap-2"><ToolCard title="Read project files" detail="app/page.tsx · package.json · 3 files" status="done"><div className="flex flex-col gap-1 font-mono text-[11px] text-muted-foreground"><span>✓ app/page.tsx <b className="font-normal text-foreground/80">(42 lines)</b></span><span>✓ package.json <b className="font-normal text-foreground/80">(Next.js 16)</b></span><span>✓ tsconfig.json <b className="font-normal text-foreground/80">(strict)</b></span></div></ToolCard><ToolCard title="Plan implementation" detail="4 steps · estimated 2 min" status="done"><div className="flex flex-col gap-2 text-xs text-muted-foreground"><div className="flex gap-2"><Check className="text-emerald-400" /> Build layout and responsive shell</div><div className="flex gap-2"><Check className="text-emerald-400" /> Add accessible hero and feature sections</div><div className="flex gap-2"><Loader2 className="animate-spin text-violet-400" /> Applying changes to page.tsx</div></div></ToolCard></div></Message>
       <Message user time="10:43 AM" avatar="MC"><p>Great. Keep the visual language minimal — dark canvas, soft violet accents, and a CTA that feels intentional.</p></Message>
       <Message time="10:43 AM" avatar="F"><p>On it. I&apos;ve also kept the existing spacing tokens and added a subtle gradient for depth. Here&apos;s the proposed change:</p><div className="mt-4 flex flex-col gap-2"><ToolCard title="Applying changes" detail="app/page.tsx · +12 -3 lines" status="running"><div className="rounded-md bg-background/80 p-3 font-mono text-[11px] leading-5 text-muted-foreground"><div><span className="text-emerald-400">+</span> <span className="text-foreground/80">import {'{ HeroSection }'} from &apos;@/components/hero-section&apos;</span></div><div><span className="text-emerald-400">+</span> <span className="text-foreground/80">import {'{ FeatureGrid }'} from &apos;@/components/feature-grid&apos;</span></div><div><span className="text-emerald-400">+</span> <span className="text-foreground/80">&lt;HeroSection /&gt;</span></div></div></ToolCard></div></Message>
-      {messages.map((message) => <Message key={message.time + message.text} user time={message.time} avatar="MC"><p>{message.text}</p></Message>)}
+      {messages.map((message, idx) => <Message key={`msg-${idx}-${message.time}`} user time={message.time} avatar="MC"><p>{message.text}</p></Message>)}
     </div></div>
     <div className="border-t border-border bg-background px-4 py-3 sm:px-8"><div className="mx-auto max-w-3xl"><div className="rounded-xl border border-border bg-card shadow-xl shadow-black/10 focus-within:border-violet-500/60"><textarea aria-label="Message the coding agent" value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) { e.preventDefault(); send() } }} placeholder="Ask Forge to edit your code..." rows={2} className="w-full resize-none bg-transparent px-4 pt-3 text-sm outline-none placeholder:text-muted-foreground" /><div className="flex items-center justify-between px-3 pb-2 pt-1"><div className="flex items-center gap-1"><button aria-label="Attach file" className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"><Paperclip /></button><button className="hidden items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground sm:flex"><ListChecks /> Plan first</button><span className="hidden text-[10px] text-muted-foreground sm:inline">Shift + Enter for new line</span></div><div className="flex items-center gap-2"><span className="hidden text-[10px] text-muted-foreground sm:inline">Claude Sonnet 4 <ChevronDown /></span><Button aria-label="Send message" onClick={send} size="icon" className="size-8 bg-violet-600 text-white hover:bg-violet-500"><Send data-icon="inline-start" /></Button></div></div></div></div></div>
   </section>
